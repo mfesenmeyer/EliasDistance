@@ -20,6 +20,7 @@ data: dataString,
 cache: false,
 success: function(result){
 $("#results-table").css("display", "block");
+$("#results-table").html(result);
 alert(result);
 }
 });
