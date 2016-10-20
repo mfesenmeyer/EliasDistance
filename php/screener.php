@@ -33,62 +33,71 @@ $company1_assoc = $result_comp->fetch_assoc();
 $stmt_all->bind_param('s', $company);
 $stmt_all->execute();
 $result_all = $stmt_all->get_result();
-//Pass the results to an associative array
-$company_all = $result_all->fetch_assoc();
 
 
-// $company_all means... we have all the other companies... now how to go row by row and assing the elias distance to a new array with ticker/name association.
-
-
-if($company1_assoc["attribute_1"] != NULL){
 $company1 = array();
-$company2 = array();
-
 // Think about eventually creating this into a for loop with $compnay1_assoc.length 
 array_push($company1, $company1_assoc["attribute_1"], $company1_assoc["attribute_2"], 
-	$company1_assoc["attribute_3"], $company1_assoc["attribute_4"], $company1_assoc["attribute_5"]
-	, $company1_assoc["attribute_6"], $company1_assoc["attribute_7"], $company1_assoc["attribute_8"]
-	, $company1_assoc["attribute_9"]);
+  $company1_assoc, $company1_assoc["attribute_4"], $company1_assoc["attribute_5"]
+  , $company1_assoc["attribute_6"], $company1_assoc["attribute_7"], $company1_assoc["attribute_8"]
+  , $company1_assoc["attribute_9"]);
+ 
 
+if ($result_all ->num_rows > 0) {
+  //Pass the results to an associative array
+    while($company_all = $result_all->fetch_assoc()) {
+          
+        $company_name = $company_all["company_name"];
+        $company_ticker = $company_all["company_id"];
 
-array_push($company2, $company_all["attribute_1"], $company_all["attribute_2"], 
-  $company_all["attribute_3"], $company_all["attribute_4"], $company_all["attribute_5"]
-  , $company_all["attribute_6"], $company_all["attribute_7"], $company_all["attribute_8"]
-  , $company_all["attribute_9"]);
+        $company_attributes = array();
+        array_push($company_attributes, $company_all["attribute_1"], $company_all["attribute_2"], 
+        $company_all["attribute_3"], $company_all["attribute_4"], $company_all["attribute_5"]
+        , $company_all["attribute_6"], $company_all["attribute_7"], $company_all["attribute_8"]
+        , $company_all["attribute_9"]);
 
+      
+        eliasDistanceCalculation($company_name, $company_ticker, $company_attributes);
 
-//$company2 = array(0.383,	0.663,	0.044,	0.887,	0.103,	0.233,	0.412,	0.625,	0.506);
-//$company2 = array(0.674,	0.251,	0.234,	0.943,	0.250,	0.178,	0.894,	0.134,	0.479);
+    }
+} else {
+    echo "Connection Error with second Query";
+}
 
+/** Calculation Function **/
+function eliasDistanceCalculation($company_name, $company_ticker, $company_attributes) {
+    echo $company_name;
+    echo $company_ticker;
+    
+    global $company1;
 
-$results = array();
-for ($x = 0; $x <= count($company1) - 1; $x++) {
-	  $diff = $company1[$x] - $company2[$x];
-    $results[$x] = pow(2, $diff);
-    //echo 'Pos '. $x .' difference sqrt: ' . $results[$x] . '<br>';
-} 
-$attribute_sum = array_sum($results);
-$eliasDistance = sqrt($attribute_sum);
+    $results = array();
+    for ($x = 0; $x <= count($company1) - 1; $x++) {
+        $diff = (float)$company1[$x] - (float)$company_attributes[$x];
+        $results[$x] = pow(2, $diff);
+    } 
 
-echo '<thead>
-    <tr>
-      <th>#</th>
-      <th>Company</th>
-      <th>Ticker</th>
-      <th>Elias Distance</th>
-    </tr>
-  </thead>
-    <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Google</td>
-      <td>GOOGL</td>
-	  <td>' . $eliasDistance . '</td>
-    </tr>
-  </tbody>';
+    $attribute_sum = array_sum($results);
+    $eliasDistance = sqrt($attribute_sum);
+
+    echo '<thead>
+        <tr>
+          <th>#</th>
+          <th>Company</th>
+          <th>Ticker</th>
+        <th>Elias Distance</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">1</th>
+          <td>' .$company_name .'</td>
+          <td>' .$company_ticker . '</td>
+          <td>' . $eliasDistance . '</td>
+        </tr>
+    </tbody>';
 //mysql_close($connection); // Connection Closed
+
 }
-else{
-    echo "Company entered is unrecognizable";
-}
+
 ?>
