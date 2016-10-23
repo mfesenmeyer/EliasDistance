@@ -2,6 +2,8 @@ $(document).ready(function(){
 
 $("#submit").click(function(){
 var company = $("#company").val();
+var amount = $("#amount").val();
+
 
 var dataString = 'company='+ company;
 
@@ -16,12 +18,15 @@ else
 $.ajax({
 type: "POST",
 url: "/php/screener.php",
-data: dataString,
+data: {
+        company: company,
+        amount: amount
+},
 cache: false,
 success: function(result){
+alert(result);
 $("#results-table").css("display", "block");
 $("#results-table").html(result);
-alert(result);
 }
 });
 }

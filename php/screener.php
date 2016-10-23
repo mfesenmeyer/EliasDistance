@@ -2,11 +2,12 @@
 
 //Include DB connection as $conn
 include'db_connection.php';
+include 'company.php';
 
 //Pass company parameter from JavaScript 
-if(isset($_POST['company']) && !empty($_POST['company'])) {
  $company = $_POST['company'];
-}
+ $amount = $_POST['amount'];
+
 
 //Sql Query to select attributes from UI specified company
 $sql_comp = "SELECT * FROM myDB.screener WHERE company_name=?";
@@ -34,13 +35,15 @@ $stmt_all->bind_param('s', $company);
 $stmt_all->execute();
 $result_all = $stmt_all->get_result();
 
-
+$unsorted_companies = array();
 $company1 = array();
+
+
 // Think about eventually creating this into a for loop with $compnay1_assoc.length 
 array_push($company1, $company1_assoc["attribute_1"], $company1_assoc["attribute_2"], 
   $company1_assoc, $company1_assoc["attribute_4"], $company1_assoc["attribute_5"]
   , $company1_assoc["attribute_6"], $company1_assoc["attribute_7"], $company1_assoc["attribute_8"]
-  , $company1_assoc["attribute_9"]);
+  , $company1_assoc["attribute_9"], $company1_assoc["attribute_10"]);
  
 
 if ($result_all ->num_rows > 0) {
@@ -54,21 +57,55 @@ if ($result_all ->num_rows > 0) {
         array_push($company_attributes, $company_all["attribute_1"], $company_all["attribute_2"], 
         $company_all["attribute_3"], $company_all["attribute_4"], $company_all["attribute_5"]
         , $company_all["attribute_6"], $company_all["attribute_7"], $company_all["attribute_8"]
-        , $company_all["attribute_9"]);
+        , $company_all["attribute_9"], $company1_assoc["attribute_10"]);
 
-      
-        eliasDistanceCalculation($company_name, $company_ticker, $company_attributes);
+        //Returns the Company object with name, ticker and elias Distance
+        $companyResult = eliasDistanceCalculation($company_name, $company_ticker, $company_attributes);
+        //Push the Companies being returned to an array of Unsorted Companies         
+        array_push($unsorted_companies, $companyResult);
 
     }
+
+        //Comparator function to sort based on eliasDistance attribute
+        usort($unsorted_companies, function($a, $b)
+        {
+            return strcmp($a->eliasDistance, $b->eliasDistance);
+        });
+
+        $filtered_companies = array_slice($unsorted_companies, 0, $amount);
+
+    //Echo the results 
+     echo '
+     <thead>
+        <tr>
+          <th>#</th>
+          <th>Company</th>
+          <th>Ticker</th>
+        <th>Elias Distance</th>
+      </tr></thead>
+      <tbody>'; 
+        
+        //For each company that's now sorted, print out the index, comapny name ticker and elias Distance        
+        $company_counter = 1;  
+        foreach ($filtered_companies as $company) {  
+          echo '<tr><th scope="row">' .$company_counter. '</th><td>' . $company->name . '</td><td>' . $company->ticker . "</td><td>" . $company->eliasDistance . "</td></tr>";
+          $company_counter++;
+        }
+      echo '</tbody>';
+          
 } else {
     echo "Connection Error with second Query";
 }
 
-/** Calculation Function **/
-function eliasDistanceCalculation($company_name, $company_ticker, $company_attributes) {
-    echo $company_name;
-    echo $company_ticker;
-    
+
+/******* HELPER METHOD **********/
+/** Elias Distance Calculation 
+
+Parameters - Name, Ticker, Array of attributes 
+Returns - Name, Ticker, Elias Distance Result as a Company Object 
+
+**/
+function eliasDistanceCalculation($company_name, $company_ticker, $company_attributes) {    
     global $company1;
 
     $results = array();
@@ -79,25 +116,10 @@ function eliasDistanceCalculation($company_name, $company_ticker, $company_attri
 
     $attribute_sum = array_sum($results);
     $eliasDistance = sqrt($attribute_sum);
-
-    echo '<thead>
-        <tr>
-          <th>#</th>
-          <th>Company</th>
-          <th>Ticker</th>
-        <th>Elias Distance</th>
-      </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>' .$company_name .'</td>
-          <td>' .$company_ticker . '</td>
-          <td>' . $eliasDistance . '</td>
-        </tr>
-    </tbody>';
-//mysql_close($connection); // Connection Closed
-
+  
+    //Company Constructor and Function return value  
+    return $company_obj = new Company($company_name, $company_ticker, $eliasDistance);
+  
 }
 
 ?>

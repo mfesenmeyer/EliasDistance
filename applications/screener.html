@@ -23,7 +23,7 @@
 
 <body>
 
-	<div class="container">
+<div class="container">
 
 		<!-- Start of Header-->
 		<!-- Soon will insert with JavaScript-->
@@ -57,29 +57,28 @@
 		<div id="application1">
 			
 <div>
-<label>Find me companies geosimilar to: </label>
+<label>Find me the top</label> 
+<select id="amount" >
+  <option value="5">5</option>
+  <option value="10">10</option>
+  <option value="15">15</option>
+  <option value="20">20</option>
+</select>  
+<label>companies geosimilar to: </label>
+
 <input id="company" type="text">
 <input id="submit" class="btn btn-default" type="button" value="Submit">
 </div>
 </br>
 
 <!-- This is where the results are dynamically entered through JS -->
-<table id="results-table" class="table table-hover">
+<table id="results-table" class="table table-hover" style="margin-bottom:50px;">
 </table>
 </div>
 		
 
-		<!-- First Row of Data -->
-		<div class="row">
 
-		<div class="col-sm-6">
-
-		</div>	
-
-		</div>
-		</div>
-
-	
+</div>
 
 	<!-- Start of Footer - fixed to bottom of page -->
 	<!-- Inserted with JavaScript -->
