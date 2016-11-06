@@ -41,10 +41,12 @@ $company1 = array();
 
 // Think about eventually creating this into a for loop with $compnay1_assoc.length 
 array_push($company1, $company1_assoc["attribute_1"], $company1_assoc["attribute_2"], 
-  $company1_assoc, $company1_assoc["attribute_4"], $company1_assoc["attribute_5"]
+  $company1_assoc["attribute_3"], $company1_assoc["attribute_4"], $company1_assoc["attribute_5"]
   , $company1_assoc["attribute_6"], $company1_assoc["attribute_7"], $company1_assoc["attribute_8"]
   , $company1_assoc["attribute_9"], $company1_assoc["attribute_10"]);
  
+
+
 
 if ($result_all ->num_rows > 0) {
   //Pass the results to an associative array
@@ -57,7 +59,7 @@ if ($result_all ->num_rows > 0) {
         array_push($company_attributes, $company_all["attribute_1"], $company_all["attribute_2"], 
         $company_all["attribute_3"], $company_all["attribute_4"], $company_all["attribute_5"]
         , $company_all["attribute_6"], $company_all["attribute_7"], $company_all["attribute_8"]
-        , $company_all["attribute_9"], $company1_assoc["attribute_10"]);
+        , $company_all["attribute_9"], $company_all["attribute_10"]);
 
         //Returns the Company object with name, ticker and elias Distance
         $companyResult = eliasDistanceCalculation($company_name, $company_ticker, $company_attributes);
@@ -111,9 +113,9 @@ function eliasDistanceCalculation($company_name, $company_ticker, $company_attri
     $results = array();
     for ($x = 0; $x <= count($company1) - 1; $x++) {
         $diff = (float)$company1[$x] - (float)$company_attributes[$x];
-        $results[$x] = pow(2, $diff);
+        $results[$x] = pow($diff, 2);
     } 
-
+    
     $attribute_sum = array_sum($results);
     $eliasDistance = sqrt($attribute_sum);
   

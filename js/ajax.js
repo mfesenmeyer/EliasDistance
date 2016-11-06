@@ -3,8 +3,6 @@ $(document).ready(function(){
 $("#submit").click(function(){
 var company = $("#company").val();
 var amount = $("#amount").val();
-
-
 var dataString = 'company='+ company;
 
 // Returns successful data submission message when the entered information is stored in database.
@@ -32,4 +30,8 @@ $("#results-table").html(result);
 }
 return false;
 });
+
+
+
+
 });
