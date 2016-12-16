@@ -9,6 +9,10 @@ include 'company.php';
  $amount = $_POST['amount'];
 
 
+//Eventually pass from JavaScript 
+$i = 2;
+
+
 //Sql Query to select attributes from UI specified company
 $sql_comp = "SELECT * FROM myDB.screener WHERE company_name=?";
 //SQL Query to select all other rows that aren't the company submitted
@@ -40,13 +44,32 @@ $company1 = array();
 
 
 // Think about eventually creating this into a for loop with $compnay1_assoc.length 
-array_push($company1, $company1_assoc["attribute_1"], $company1_assoc["attribute_2"], 
-  $company1_assoc["attribute_3"], $company1_assoc["attribute_4"], $company1_assoc["attribute_5"]
-  , $company1_assoc["attribute_6"], $company1_assoc["attribute_7"], $company1_assoc["attribute_8"]
-  , $company1_assoc["attribute_9"], $company1_assoc["attribute_10"]);
- 
 
 
+//Pass in the correct attributes to run the Elias distance based on user input (Company entered)
+switch ($i) {
+    case 0:
+        array_push($company1, $company1_assoc["attribute_1"], $company1_assoc["attribute_2"], 
+        $company1_assoc["attribute_3"], $company1_assoc["attribute_4"], $company1_assoc["attribute_5"]
+        , $company1_assoc["attribute_6"], $company1_assoc["attribute_7"], $company1_assoc["attribute_8"]
+        , $company1_assoc["attribute_9"], $company1_assoc["attribute_10"]);
+        break;
+    case 1:
+        array_push($company1, $company1_assoc["attribute_1"], $company1_assoc["attribute_2"], 
+        $company1_assoc["attribute_3"]);
+        break;
+    case 2:
+        array_push($company1, $company1_assoc["attribute_4"], $company1_assoc["attribute_5"]
+        , $company1_assoc["attribute_6"]);
+        break;
+    case 3:
+        array_push($company1, $company1_assoc["attribute_7"], $company1_assoc["attribute_8"]
+        , $company1_assoc["attribute_9"], $company1_assoc["attribute_10"]);
+        break;
+}
+
+// Conditional check to make sure company entered is in our DB
+if ($company1_assoc["attribute_1"] != null){
 
 if ($result_all ->num_rows > 0) {
   //Pass the results to an associative array
@@ -56,10 +79,29 @@ if ($result_all ->num_rows > 0) {
         $company_ticker = $company_all["company_id"];
 
         $company_attributes = array();
-        array_push($company_attributes, $company_all["attribute_1"], $company_all["attribute_2"], 
-        $company_all["attribute_3"], $company_all["attribute_4"], $company_all["attribute_5"]
-        , $company_all["attribute_6"], $company_all["attribute_7"], $company_all["attribute_8"]
-        , $company_all["attribute_9"], $company_all["attribute_10"]);
+
+      //Pass in the correct attributes to run the Elias distance based on user input (All other companines)
+      switch ($i) {
+          case 0:
+              array_push($company_attributes, $company_all["attribute_1"], $company_all["attribute_2"], 
+              $company_all["attribute_3"], $company_all["attribute_4"], $company_all["attribute_5"]
+              , $company_all["attribute_6"], $company_all["attribute_7"], $company_all["attribute_8"]
+              , $company_all["attribute_9"], $company_all["attribute_10"]);
+              break;
+          case 1:
+              array_push($company_attributes, $company_all["attribute_1"], $company_all["attribute_2"], 
+              $company_all["attribute_3"]);
+              break;
+          case 2:
+              array_push($company_attributes, $company_all["attribute_4"], $company_all["attribute_5"]
+              , $company_all["attribute_6"]);
+              break;
+          case 3:
+              array_push($company_attributes, $company_all["attribute_7"], $company_all["attribute_8"]
+              , $company_all["attribute_9"], $company_all["attribute_10"]);
+              break;
+      }
+
 
         //Returns the Company object with name, ticker and elias Distance
         $companyResult = eliasDistanceCalculation($company_name, $company_ticker, $company_attributes);
@@ -77,7 +119,8 @@ if ($result_all ->num_rows > 0) {
         $filtered_companies = array_slice($unsorted_companies, 0, $amount);
 
     //Echo the results 
-     echo '
+     echo'
+
      <thead>
         <tr>
           <th>#</th>
@@ -97,6 +140,11 @@ if ($result_all ->num_rows > 0) {
           
 } else {
     echo "Connection Error with second Query";
+}
+
+}
+else{
+  echo 'Sorry the company you entered is unrecognizable. Please try again.';
 }
 
 

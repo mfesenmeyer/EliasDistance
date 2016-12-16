@@ -17,7 +17,7 @@
 
 	<!---JS Files -->
 	<script src="/js/ajax.js"></script>
-
+	<script src="/js/screener.js"></script>
 
 </head>
 
@@ -37,6 +37,7 @@
         <div class="modal-body">
           <p id="ticker"></p>
           <div id='result'></div>
+          <img id="loading" src="/images/ajax-loader.gif" alt="loading" style="">
 
         </div>
         <div class="modal-footer">
@@ -98,7 +99,7 @@
 </br>
 
 <!-- This is where the results are dynamically entered through JS -->
-<table id="results-table" class="table table-hover" style="margin-bottom:50px;">
+<table id="results-table" class="table table-hover" style="margin-bottom:90px;">
 </table>
 </div>
 
@@ -108,49 +109,36 @@
 	<!-- Inserted with JavaScript -->
 	<div id="footer">
 	</div>
-
 		
 </div>	
-
 </body>
 
-<script> 
-
-
-// Yahoo YQL Helper Method 
-function getData(symbol) {
-    var url = "http://query.yahooapis.com/v1/public/yql";
-    var data = encodeURIComponent("select * from yahoo.finance.quotes where symbol in ('" + symbol + "')");
-
-    $.getJSON(url, 'q=' + data + "&format=json&diagnostics=true&env=http://datatables.org/alltables.env")
-        .done(function (data) {
-        $("#result").text("Bid Price: " + data.query.results.quote.LastTradePriceOnly);
-    })
-        .fail(function (jqxhr, textStatus, error) {
-        var err = textStatus + ", " + error;
-            $("#result").text('Request failed: ' + err);
-    });
-}
-
-// On click table event handler 
-$('#results-table').on('click', 'tr', function() {
-    var company = $(this).find('td:eq(0)').text();
-	var ticker = $(this).find('td:eq(1)').text();
-
-	$(".modal-title").text(company);
-	$("#ticker").text(ticker);
-	
-	// Hit the yahoo api using the ticker symbol as a parameter 
-	getData(ticker);
-
-    $('#myModal').modal('show');
-
-});
+<script>
 
 $(document).ready(function(){
    $(function(){
       $('#footer').load("../footer.html"); 
    });
 });
-</script>  
+
+// On click table row event handler 
+$('#results-table').on('click', 'tr', function() {
+	// Clear any prior results from modal
+	$("#result").text('');
+    var company = $(this).find('td:eq(0)').text();
+	var ticker = $(this).find('td:eq(1)').text();
+	
+	// Add in updated Company and ticker name - directly from table
+	$(".modal-title").text(company);
+	$("#ticker").text(ticker);
+	
+	// Add loading gif and display modal
+	$("#loading").css("display","block");
+	$('#myModal').modal('show');
+
+	// Hit the yahoo api using the ticker symbol as a parameter 
+	getData(ticker);
+});
+</script> 
+
 </html>
