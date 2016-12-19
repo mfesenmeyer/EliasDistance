@@ -7,11 +7,10 @@ include 'company.php';
 //Pass company parameter from JavaScript 
  $company = $_POST['company'];
  $amount = $_POST['amount'];
-
+ $attributes = $_POST['attributes'];
 
 //Eventually pass from JavaScript 
-$i = 2;
-
+$user_attributes = $attributes;
 
 //Sql Query to select attributes from UI specified company
 $sql_comp = "SELECT * FROM myDB.screener WHERE company_name=?";
@@ -47,7 +46,7 @@ $company1 = array();
 
 
 //Pass in the correct attributes to run the Elias distance based on user input (Company entered)
-switch ($i) {
+switch ($user_attributes) {
     case 0:
         array_push($company1, $company1_assoc["attribute_1"], $company1_assoc["attribute_2"], 
         $company1_assoc["attribute_3"], $company1_assoc["attribute_4"], $company1_assoc["attribute_5"]
@@ -81,7 +80,7 @@ if ($result_all ->num_rows > 0) {
         $company_attributes = array();
 
       //Pass in the correct attributes to run the Elias distance based on user input (All other companines)
-      switch ($i) {
+      switch ($user_attributes) {
           case 0:
               array_push($company_attributes, $company_all["attribute_1"], $company_all["attribute_2"], 
               $company_all["attribute_3"], $company_all["attribute_4"], $company_all["attribute_5"]

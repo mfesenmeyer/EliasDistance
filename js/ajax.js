@@ -4,7 +4,7 @@ $(document).ready(function(){
 $("#submit").click(function(){
 var company = $("#company").val();
 var amount = $("#amount").val();
-var dataString = 'company='+ company;
+var attributes = $("#attributes").val();
 
 // Returns successful data submission message when the entered information is stored in database.
 if(company=='')
@@ -19,7 +19,9 @@ type: "POST",
 url: "/php/screener.php",
 data: {
         company: company,
-        amount: amount
+        amount: amount,
+        attributes: attributes
+
 },
 cache: false,
 success: function(result){
@@ -40,7 +42,8 @@ $('#company').keypress(function (e) {
   {
 		var company = $("#company").val();
 		var amount = $("#amount").val();
-		var dataString = 'company='+ company;
+		var attributes = $("#attributes").val();
+
 
 		// Returns successful data submission message when the entered information is stored in database.
 		if(company=='')
@@ -55,7 +58,8 @@ $('#company').keypress(function (e) {
 		url: "/php/screener.php",
 		data: {
 		        company: company,
-		        amount: amount
+		        amount: amount,
+		        attributes: attributes
 		},
 		cache: false,
 		success: function(result){
