@@ -25,7 +25,7 @@ data: {
 },
 cache: false,
 success: function(result){
-alert(result);
+//alert(result);
 //$("#results-table").css("display", "block");
 $("#results-table").html(result);
 }
@@ -63,7 +63,7 @@ $('#company').keypress(function (e) {
 		},
 		cache: false,
 		success: function(result){
-		alert(result);
+		//alert(result);
 		//$("#results-table").css("display", "block");
 		$("#results-table").html(result);
 		}
